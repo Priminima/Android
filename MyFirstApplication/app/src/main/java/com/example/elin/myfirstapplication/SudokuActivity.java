@@ -1,47 +1,31 @@
 package com.example.elin.myfirstapplication;
 
-import android.content.Context;
 import android.content.Intent;
-import android.graphics.Color;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
-import android.view.Gravity;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.EditText;
-import android.widget.GridLayout;
-import android.widget.GridView;
 import android.widget.TextView;
 
+/**
+ * Created by elin on 2015-03-08.
+ */
+public class SudokuActivity extends ActionBarActivity {
 
-public class DisplayMessageActivity extends ActionBarActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        Intent intent = getIntent();
-        String message = intent.getStringExtra(MainActivity.EXTRA_MESSAGE);
+
+        EditText ed = new EditText(this);
+        ed.setVisibility(View.VISIBLE);
+
+
         TextView tv = new TextView(this);
         tv.setTextSize(40);
-        tv.setText(message);
-        //setContentView(tv);
-
-        GridView gv = new GridView(this);
-        gv.setId(this.getTaskId());
-        gv.setLayoutParams(new
-                GridView.LayoutParams(GridLayout.LayoutParams.FILL_PARENT, GridLayout.LayoutParams.FILL_PARENT));
-        gv.setBackgroundColor(Color.GREEN);
-        gv.setNumColumns(3);
-        gv.setColumnWidth(GridView.AUTO_FIT);
-        gv.setVerticalSpacing(5);
-        gv.setHorizontalSpacing(5);
-        gv.setStretchMode(GridView.STRETCH_COLUMN_WIDTH);
-        gv.setGravity(Gravity.CENTER);
-
-        setContentView(gv);
-
+        setContentView(tv);
     }
-
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
@@ -57,4 +41,5 @@ public class DisplayMessageActivity extends ActionBarActivity {
 
         return super.onOptionsItemSelected(item);
     }
+
 }

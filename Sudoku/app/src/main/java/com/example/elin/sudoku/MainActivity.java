@@ -1,20 +1,29 @@
-package com.example.elin.myfirstapplication;
+package com.example.elin.sudoku;
 
-import android.content.Intent;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.EditText;
+import android.widget.TextView;
 
 
 public class MainActivity extends ActionBarActivity {
-    public final static String EXTRA_MESSAGE = "com.mycompany.myfirstapp.MESSAGE";
+
+    View gameMap[][] = new View[4][4];
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        for (int i = 0; i < 4; i++) {
+            for (int j = 0; j < 4; j++) {
+                String tvIJ = "tv" + i + "-" + j;
+                int resID = getResources().getIdentifier(tvIJ, "id", "com.example.elin.sudoku");
+                gameMap[i][j] = findViewById(resID);
+            }
+        }
     }
 
 
@@ -40,18 +49,8 @@ public class MainActivity extends ActionBarActivity {
         return super.onOptionsItemSelected(item);
     }
 
-    public void sendMessage(View view) {
-        Intent intent = new Intent(this, DisplayMessageActivity.class);
-        EditText editText = (EditText) findViewById(R.id.edit_message);
-        String message = editText.getText().toString();
-        intent.putExtra(EXTRA_MESSAGE, message);
-        startActivity(intent);
-    }
+    public void onMoveTile(View v) {
 
-    public void startSudoku(View view) {
-        System.out.println("hit");
-        Intent intent = new Intent(this, SudokuActivity.class);
-        startActivity(intent);
-    }
 
+    }
 }
