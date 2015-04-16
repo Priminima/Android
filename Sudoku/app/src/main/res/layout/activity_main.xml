@@ -16,21 +16,13 @@
         android:layout_alignParentBottom="true"
         android:layout_centerHorizontal="true"
         android:layout_alignParentEnd="false"
-        android:layout_alignParentStart="false">
+        android:layout_alignParentStart="false"
 
-        <TextView
-            android:text="hello"
-            android:layout_width="100dp"
-            android:layout_height="100dp"
-            android:id="@+id/tv1" />
+        android:id="@+id/gameMap"
+        android:columnCount="4"
+        android:rowCount="4">
 
 
-        <TextView
-            android:text="world"
-            android:layout_width="100dp"
-            android:layout_height="100dp"
-            android:onClick="onMoveTile"
-            android:id="@+id/tv2" />
-        </GridLayout>
+    </GridLayout>
 
 </RelativeLayout>
