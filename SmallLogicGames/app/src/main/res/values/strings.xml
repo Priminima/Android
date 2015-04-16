@@ -1,0 +1,14 @@
+<resources>
+    <string name="app_name">Small Logic Games</string>
+
+    <string name="title_section1">Fifteen Game</string>
+    <string name="title_section2">Tile Flip</string>
+    <string name="title_section3">Sudoku</string>
+
+    <string name="navigation_drawer_open">Open navigation drawer</string>
+    <string name="navigation_drawer_close">Close navigation drawer</string>
+
+    <string name="action_example">Example action</string>
+
+    <string name="action_settings">Settings</string>
+</resources>
