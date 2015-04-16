@@ -12,6 +12,7 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.GridLayout;
 import android.widget.LinearLayout;
+import android.widget.Toast;
 
 public class MainActivity extends ActionBarActivity implements View.OnClickListener {
 
@@ -25,7 +26,7 @@ public class MainActivity extends ActionBarActivity implements View.OnClickListe
         setContentView(R.layout.activity_main);
 
         GridLayout gMapL = (GridLayout) findViewById(R.id.gameMap);
-        
+
         for (int i = 0; i < 4; i++) {
             for (int j = 0; j < 4; j++) {
                 gameMap[i][j] = new Tile(i, j, this);
@@ -92,7 +93,7 @@ public class MainActivity extends ActionBarActivity implements View.OnClickListe
                 }
             }
         } else {
-
+            Toast.makeText(this, "Illegal move", Toast.LENGTH_SHORT).show();
         }
     }
 
