@@ -22,7 +22,7 @@ import android.widget.Toast;
 
 
 public class MainActivity extends ActionBarActivity
-        implements NavigationDrawerFragment.NavigationDrawerCallbacks{
+        implements NavigationDrawerFragment.NavigationDrawerCallbacks {
 
     /**
      * Fragment managing the behaviors, interactions and presentation of the navigation drawer.
@@ -52,10 +52,17 @@ public class MainActivity extends ActionBarActivity
     @Override
     public void onNavigationDrawerItemSelected(int position) {
         // update the main content by replacing fragments
-        FragmentManager fragmentManager = getSupportFragmentManager();
-        fragmentManager.beginTransaction()
-                .replace(R.id.container, PlaceholderFragment.newInstance(position + 1))
-                .commit();
+        if (position == 0) {
+            FragmentManager fragmentManager = getSupportFragmentManager();
+            fragmentManager.beginTransaction()
+                    .replace(R.id.container, Fifteen.newInstance(position + 1))
+                    .commit();
+        } else {
+            FragmentManager fragmentManager = getSupportFragmentManager();
+            fragmentManager.beginTransaction()
+                    .replace(R.id.container, TileFlip.newInstance(position + 1))
+                    .commit();
+        }
     }
 
     public void onSectionAttached(int number) {
@@ -107,108 +114,4 @@ public class MainActivity extends ActionBarActivity
 
         return super.onOptionsItemSelected(item);
     }
-
-    /**
-     * A placeholder fragment containing a simple view.
-     */
-    public static class PlaceholderFragment extends Fragment implements View.OnClickListener{
-        /**
-         * The fragment argument representing the section number for this
-         * fragment.
-         */
-        private static final String ARG_SECTION_NUMBER = "section_number";
-        Tile gameMap[][] = new Tile[4][4];
-        int row; //rowen som den tomma rutan är på
-        int col; //columnen som den tomma rutan är på
-        int numMoves;
-        /**
-         * Returns a new instance of this fragment for the given section
-         * number.
-         */
-        public static PlaceholderFragment newInstance(int sectionNumber) {
-            PlaceholderFragment fragment = new PlaceholderFragment();
-            Bundle args = new Bundle();
-            args.putInt(ARG_SECTION_NUMBER, sectionNumber);
-            fragment.setArguments(args);
-            return fragment;
-        }
-
-        public PlaceholderFragment() {
-        }
-
-        @Override
-        public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                                 Bundle savedInstanceState) {
-            View rootView = inflater.inflate(R.layout.fragment_main, container, false);
-            View v = getView();
-
-            GridLayout gMapL = (GridLayout) rootView.findViewById(R.id.gridLM);
-
-            for (int i = 0; i < 4; i++) {
-                for (int j = 0; j < 4; j++) {
-                    gameMap[i][j] = new Tile(i, j, getActivity());
-                    gameMap[i][j].setText((16 - (j * 4 + i)) + "");
-                    gameMap[i][j].setLayoutParams(new ViewGroup.LayoutParams(170, 170));
-                    //gameMap[i][j].setWidth(80);
-                    gameMap[i][j].setOnClickListener(this);
-                    gMapL.addView(gameMap[i][j]);
-                }
-            }
-
-            gameMap[0][0].setText("");
-            gameMap[0][0].setEnabled(false);
-            row = 0;
-            col = 0;
-            return rootView;
-        }
-        public void onClick(View v) {
-
-            Tile t = (Tile) getView().findViewById(v.getId());
-            int i = t.r;
-            int j = t.c;
-
-            if (row == i) {
-                if (col > j) {
-                    while (col - 1 >= j) {
-                        oneMove(i, col - 1);
-                    }
-                } else {
-                    while (col + 1 <= j) {
-                        oneMove(i, col + 1);
-                    }
-                }
-            } else if (col == j) {
-                if (row > i) {
-                    while (row - 1 >= i) {
-                        oneMove(row - 1, j);
-                    }
-                } else {
-                    while (row + 1 <= i) {
-                        oneMove(row + 1, j);
-                    }
-                }
-            } else {
-                Toast.makeText(getView().getContext(), "Illegal move", Toast.LENGTH_SHORT).show();
-            }
-        }
-
-        public void oneMove(int i, int j) {
-            gameMap[row][col].setText(gameMap[i][j].getText());
-            gameMap[row][col].setEnabled(true);
-            gameMap[i][j].setText("");
-            gameMap[i][j].setEnabled(false);
-            row = i;
-            col = j;
-            numMoves++;
-            //d.setText("Antal drag: " + drag);
-        }
-
-        @Override
-        public void onAttach(Activity activity) {
-            super.onAttach(activity);
-            ((MainActivity) activity).onSectionAttached(
-                    getArguments().getInt(ARG_SECTION_NUMBER));
-        }
-    }
-
 }
