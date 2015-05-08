@@ -10,7 +10,6 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.GridLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import java.util.Random;
 
@@ -23,7 +22,7 @@ public class TileFlip extends android.support.v4.app.Fragment implements View.On
          * fragment.
          */
         private static final String ARG_SECTION_NUMBER = "section_number";
-    Knapp[][] knapp = new Knapp[5][5];
+    Tile[][] tile = new Tile[5][5];
     int x = 10; //hur många steg den blandar
     int totCounter = 0;
     //JLabel count = new JLabel("Totalt antal klick: " + totCounter);
@@ -49,45 +48,45 @@ public class TileFlip extends android.support.v4.app.Fragment implements View.On
         View v = getView();
         GridLayout gMapL = (GridLayout) rootView.findViewById(R.id.gridTF);
 
-        Knapp k = null;
+        Tile k = null;
         for (int i = 0; i < 5; i++) {
             for (int j = 0; j < 5; j++) {
-                k = new Knapp(i, j, getActivity());
+                k = new Tile(i, j, getActivity());
                 k.setText("");
                 k.getBackground().setColorFilter(0xFF12253B, PorterDuff.Mode.MULTIPLY);
                 //k.setBackgroundColor(0xFFFF0000); // 0xAARRGGBB
                 k.setOnClickListener(this);
                 k.setLayoutParams(new ViewGroup.LayoutParams(140, 140));
                 gMapL.addView(k);
-                knapp[i][j] = k;
+                tile[i][j] = k;
             }
         }
-        blanda();
+        shuffle();
 
         gMapL.setVisibility(View.VISIBLE);
         rootView.findViewById(R.id.gridLM).setVisibility(View.INVISIBLE);
         return rootView;
     }
 
-    public void blanda() {
+    public void shuffle() {
         Random ran = new Random();
         for (int i = 0; i < x; i++) {
-            klick(ran.nextInt(5), ran.nextInt(5));
+            click(ran.nextInt(5), ran.nextInt(5));
         }
     }
 
-    public void klick(int r, int c) {
+    public void click(int r, int c) {
         for (int i = 0; i < 5; i++) {
             for (int j = 0; j < 5; j++) {
                 if (((Math.abs(r - i) <= 1) && j == c)
                         || (Math.abs(c - j) <= 1) && i == r) {
-                    FlipOneTile(knapp[i][j]);
+                    FlipOneTile(tile[i][j]);
                 }
             }
         }
     }
 
-    private void FlipOneTile(Knapp k) {
+    private void FlipOneTile(Tile k) {
         if (k.up) {
             k.up = false;
             k.getBackground().setColorFilter(0xFF8CF4FF, PorterDuff.Mode.MULTIPLY);
@@ -99,12 +98,12 @@ public class TileFlip extends android.support.v4.app.Fragment implements View.On
 
     public void onClick(View v) {
 
-        Knapp k = (Knapp) getView().findViewById(v.getId());
+        Tile k = (Tile) getView().findViewById(v.getId());
 //			k.n++;
         totCounter++;
         TextView tv = (TextView) getView().findViewById(R.id.textView);
         tv.setText("Antal drag: " + totCounter);
-        klick(k.r, k.c);
+        click(k.r, k.c);
     }
 
     @Override
@@ -114,11 +113,11 @@ public class TileFlip extends android.support.v4.app.Fragment implements View.On
                 getArguments().getInt(ARG_SECTION_NUMBER));
     }
 
-    class Knapp extends Button {
+    class Tile extends Button {
         int r;
         int c;
         boolean up = true;
-        public Knapp (int r, int c, Context con) {
+        public Tile(int r, int c, Context con) {
             super(con);
             super.setId(1 + c + r * 5);
             this.r = r;
