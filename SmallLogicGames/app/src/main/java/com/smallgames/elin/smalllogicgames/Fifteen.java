@@ -78,11 +78,11 @@ public class Fifteen extends android.support.v4.app.Fragment implements View.OnC
             }
         }
 
-        gameMap[0][0].setEnabled(false);
+        //gameMap[0][0].setEnabled(false);
         row = 0;
         col = 0;
 
-        //shuffle();
+        shuffle();
     }
 
     public void onClick(View v) {
@@ -146,7 +146,7 @@ public class Fifteen extends android.support.v4.app.Fragment implements View.OnC
     }
 
     private void shuffle() {
-        CharSequence txt;
+        LogicTile lt;
         Random ran = new Random();
         int i, j;
         boolean b;
@@ -155,14 +155,31 @@ public class Fifteen extends android.support.v4.app.Fragment implements View.OnC
         for (int k = 0; k < 6; k++) {
             i = ran.nextInt(2);
             j = ran.nextInt(3);
+
+            lt = logicTile[i][j];
+            logicTile[i][j] = logicTile[i+1][j];
+            logicTile[i][j] = lt;
+
+
+            /*
             txt = gameMap[i][j].getText();
             b = gameMap[i][j].isEnabled();
             gameMap[i][j].setText(gameMap[i+1][j].getText());
             gameMap[i][j].setEnabled(gameMap[i+1][j].isEnabled());
             gameMap[i+1][j].setText(txt);
             gameMap[i+1][j].setEnabled(b);
+            */
         }
+        updateAll();
 
+    }
+
+    private void updateAll() {
+        for (int i = 0; i < 4; i++) {
+            for (int j = 0; j < 4; j++) {
+                gameMap[i][j].update(logicTile[i][j]);
+            }
+        }
     }
 
     class Tile extends Button {
