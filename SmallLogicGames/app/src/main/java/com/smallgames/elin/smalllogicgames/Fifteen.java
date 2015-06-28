@@ -31,6 +31,10 @@ public class Fifteen extends android.support.v4.app.Fragment implements View.OnC
     int row; //rowen som den tomma rutan är på
     int col; //columnen som den tomma rutan är på
     int numMoves;
+    public Fifteen() {
+
+    }
+
     /**
      * Returns a new instance of this fragment for the given section
      * number.
@@ -41,10 +45,6 @@ public class Fifteen extends android.support.v4.app.Fragment implements View.OnC
         args.putInt(ARG_SECTION_NUMBER, sectionNumber);
         fragment.setArguments(args);
         return fragment;
-    }
-
-    public Fifteen() {
-
     }
 
     @Override
@@ -58,9 +58,11 @@ public class Fifteen extends android.support.v4.app.Fragment implements View.OnC
         for (int i = 0; i < 4; i++) {
             for (int j = 0; j < 4; j++) {
                 gMapL.addView(gameMap[i][j]);
-                gameMap[i][j].update(logicTile[i][j]);
+                //gameMap[i][j].update(logicTile[i][j]);
             }
         }
+
+        rootView.findViewById(R.id.NewGame).setOnClickListener(this);
         gMapL.setVisibility(View.VISIBLE);
         rootView.findViewById(R.id.gridTF).setVisibility(View.INVISIBLE);
 
@@ -86,33 +88,37 @@ public class Fifteen extends android.support.v4.app.Fragment implements View.OnC
     }
 
     public void onClick(View v) {
+        if (getView().findViewById(v.getId()).getClass().equals(Tile.class)) {
+            Tile t = (Tile) getView().findViewById(v.getId());
+            int i = t.r;
+            int j = t.c;
 
-        Tile t = (Tile) getView().findViewById(v.getId());
-        int i = t.r;
-        int j = t.c;
-
-        if (row == i) {
-            if (col > j) {
-                while (col - 1 >= j) {
-                    oneMove(i, col - 1);
+            if (row == i) {
+                if (col > j) {
+                    while (col - 1 >= j) {
+                        oneMove(i, col - 1);
+                    }
+                } else {
+                    while (col + 1 <= j) {
+                        oneMove(i, col + 1);
+                    }
+                }
+            } else if (col == j) {
+                if (row > i) {
+                    while (row - 1 >= i) {
+                        oneMove(row - 1, j);
+                    }
+                } else {
+                    while (row + 1 <= i) {
+                        oneMove(row + 1, j);
+                    }
                 }
             } else {
-                while (col + 1 <= j) {
-                    oneMove(i, col + 1);
-                }
-            }
-        } else if (col == j) {
-            if (row > i) {
-                while (row - 1 >= i) {
-                    oneMove(row - 1, j);
-                }
-            } else {
-                while (row + 1 <= i) {
-                    oneMove(row + 1, j);
-                }
+                Toast.makeText(getView().getContext(), "Illegal move", Toast.LENGTH_SHORT).show();
             }
         } else {
-            Toast.makeText(getView().getContext(), "Illegal move", Toast.LENGTH_SHORT).show();
+            shuffle();
+            //Toast.makeText(getView().getContext(), "New Game", Toast.LENGTH_SHORT).show();
         }
     }
 
@@ -124,16 +130,17 @@ public class Fifteen extends android.support.v4.app.Fragment implements View.OnC
         gameMap[i][j].setEnabled(false);
 
         */
-        LogicTile t = logicTile[i][j];
+        LogicTile t = logicTile[i][j]; // t is ij
         logicTile[i][j] = logicTile[row][col];
         logicTile[row][col] = t;
-        gameMap[i][j].update(logicTile[i][j]);
+
         gameMap[row][col].update(logicTile[row][col]);
-        row = i;
-        col = j;
+        gameMap[i][j].update(logicTile[i][j]);
+
         numMoves++;
         TextView v = (TextView) getView().findViewById(R.id.textView);
         v.setText("Antal drag: " + numMoves);
+
 
 
     }
@@ -145,20 +152,39 @@ public class Fifteen extends android.support.v4.app.Fragment implements View.OnC
                 getArguments().getInt(ARG_SECTION_NUMBER));
     }
 
+    private boolean vaildPuzzle() {
+        int sum;
+        for (int i = 0; i < 4; i++) {
+            for (int j = 0; j < 4; j++) {
+                
+            }
+        }
+        return true;
+    }
+
     private void shuffle() {
         LogicTile lt;
         Random ran = new Random();
         int i, j;
-        boolean b;
+        boolean s;
         //Fixa row, col variabler också eller byt taktik helt
 
-        for (int k = 0; k < 6; k++) {
-            i = ran.nextInt(2);
-            j = ran.nextInt(3);
 
-            lt = logicTile[i][j];
-            logicTile[i][j] = logicTile[i+1][j];
-            logicTile[i][j] = lt;
+        for (int k = 0; k < 100; k++) {
+            i = ran.nextInt(3); // Random row
+            j = ran.nextInt(4); // Random col
+            s = ran.nextBoolean();
+
+
+            if (s) {
+                lt = logicTile[i][j]; // get random cell
+                logicTile[i][j] = logicTile[i+1][j];
+                logicTile[i+1][j] = lt;
+            } else {
+                lt = logicTile[j][i]; // get random cell
+                logicTile[j][i] = logicTile[j][i+1];
+                logicTile[j][i+1] = lt;
+            }
 
 
             /*
@@ -198,6 +224,8 @@ public class Fifteen extends android.support.v4.app.Fragment implements View.OnC
         void update(LogicTile l) {
             if (l.n == 16) {
                 setText("");
+                row = r;
+                col = c;
                 setEnabled(false);
             } else {
                 setText(l.n + "");
