@@ -27,7 +27,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textAppearance="?android:attr/textAppearanceSmall"
-        android:text="Antal drag: "
+        android:text="@string/numMoves"
         android:id="@+id/textView"
         android:layout_alignParentBottom="true"
         android:layout_alignParentStart="true" />
@@ -35,9 +35,10 @@
     <Button
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="New Game"
+        android:text="@string/newGame"
         android:id="@+id/NewGame"
-        android:layout_alignParentBottom="true"/>
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentEnd="true"/>
 
     <GridLayout
         android:layout_width="fill_parent"

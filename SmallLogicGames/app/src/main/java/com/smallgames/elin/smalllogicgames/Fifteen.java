@@ -139,7 +139,8 @@ public class Fifteen extends android.support.v4.app.Fragment implements View.OnC
 
         numMoves++;
         TextView v = (TextView) getView().findViewById(R.id.textView);
-        v.setText("Antal drag: " + numMoves);
+        String s = getResources().getString(R.string.numMoves);
+        v.setText(s + " " + numMoves);
 
 
 
