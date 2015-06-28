@@ -85,6 +85,7 @@ public class Fifteen extends android.support.v4.app.Fragment implements View.OnC
         col = 0;
 
         shuffle();
+
     }
 
     public void onClick(View v) {
@@ -117,8 +118,7 @@ public class Fifteen extends android.support.v4.app.Fragment implements View.OnC
                 Toast.makeText(getView().getContext(), "Illegal move", Toast.LENGTH_SHORT).show();
             }
         } else {
-            shuffle();
-            //Toast.makeText(getView().getContext(), "New Game", Toast.LENGTH_SHORT).show();
+            newGame();
         }
     }
 
@@ -199,6 +199,14 @@ public class Fifteen extends android.support.v4.app.Fragment implements View.OnC
         }
         updateAll();
 
+    }
+
+    private void newGame() {
+        shuffle();
+        numMoves = 0;
+        TextView v = (TextView) getView().findViewById(R.id.textView);
+        String s = getResources().getString(R.string.numMoves);
+        v.setText(s + " " + numMoves);
     }
 
     private void updateAll() {

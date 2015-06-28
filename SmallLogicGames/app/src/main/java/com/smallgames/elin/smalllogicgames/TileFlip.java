@@ -17,19 +17,12 @@ import java.util.Random;
  * Created by elin on 2015-04-17.
  */
 public class TileFlip extends android.support.v4.app.Fragment implements View.OnClickListener {
-        /**
-         * The fragment argument representing the section number for this
-         * fragment.
-         */
-        private static final String ARG_SECTION_NUMBER = "section_number";
+
+    private static final String ARG_SECTION_NUMBER = "section_number";
     Tile[][] tile = new Tile[5][5];
-    int x = 10; //hur många steg den blandar
-    int totCounter = 0;
-    //JLabel count = new JLabel("Totalt antal klick: " + totCounter);
-        /**
-         * Returns a new instance of this fragment for the given section
-         * number.
-         */
+    int x = 20; //how many steps it shuffles
+    int numMoves = 0;
+
     public static TileFlip newInstance(int sectionNumber) {
         TileFlip fragment = new TileFlip();
         Bundle args = new Bundle();
@@ -63,6 +56,7 @@ public class TileFlip extends android.support.v4.app.Fragment implements View.On
         }
         shuffle();
 
+        rootView.findViewById(R.id.NewGame).setOnClickListener(this);
         gMapL.setVisibility(View.VISIBLE);
         rootView.findViewById(R.id.gridLM).setVisibility(View.INVISIBLE);
         return rootView;
@@ -73,6 +67,14 @@ public class TileFlip extends android.support.v4.app.Fragment implements View.On
         for (int i = 0; i < x; i++) {
             click(ran.nextInt(5), ran.nextInt(5));
         }
+    }
+
+    private void newGame() {
+        shuffle();
+        numMoves = 0;
+        TextView v = (TextView) getView().findViewById(R.id.textView);
+        String s = getResources().getString(R.string.numMoves);
+        v.setText(s + " " + numMoves);
     }
 
     public void click(int r, int c) {
@@ -98,12 +100,15 @@ public class TileFlip extends android.support.v4.app.Fragment implements View.On
 
     public void onClick(View v) {
 
-        Tile k = (Tile) getView().findViewById(v.getId());
-//			k.n++;
-        totCounter++;
-        TextView tv = (TextView) getView().findViewById(R.id.textView);
-        tv.setText("Antal drag: " + totCounter);
-        click(k.r, k.c);
+        if (getView().findViewById(v.getId()).getClass().equals(Tile.class)) {
+            Tile k = (Tile) getView().findViewById(v.getId());
+            numMoves++;
+            TextView tv = (TextView) getView().findViewById(R.id.textView);
+            tv.setText(getResources().getString(R.string.numMoves) + " " + numMoves);
+            click(k.r, k.c);
+        } else {
+            newGame();
+        }
     }
 
     @Override
@@ -117,6 +122,7 @@ public class TileFlip extends android.support.v4.app.Fragment implements View.On
         int r;
         int c;
         boolean up = true;
+
         public Tile(int r, int c, Context con) {
             super(con);
             super.setId(1 + c + r * 5);
