@@ -74,19 +74,19 @@ public class Fifteen extends android.support.v4.app.Fragment implements View.OnC
         for (int i = 0; i < 4; i++) {
             for (int j = 0; j < 4; j++) {
                 logicTile[i][j] = new LogicTile(i, j);
-                gameMap[i][j] = new Tile(i, j, getActivity());
+                gameMap[i][j] = new Tile(i, j, getActivity(), logicTile[i][j]);
                 gameMap[i][j].setLayoutParams(new ViewGroup.LayoutParams(170, 170));
                 //gameMap[i][j].setWidth(80);
                 gameMap[i][j].setOnClickListener(this);
             }
         }
 
+
         //gameMap[0][0].setEnabled(false);
         row = 0;
         col = 0;
 
         newGame();
-
     }
 
     public void onClick(View v) {
@@ -121,6 +121,8 @@ public class Fifteen extends android.support.v4.app.Fragment implements View.OnC
         } else {
             newGame();
         }
+        Button b = (Button) getView().findViewById(R.id.NewGame);
+        b.setText(isSolvable() + "");
         isSolved();
     }
 
@@ -172,8 +174,6 @@ public class Fifteen extends android.support.v4.app.Fragment implements View.OnC
         Random ran = new Random();
         int i, j;
         boolean s;
-        //Fixa row, col variabler också eller byt taktik helt
-
 
         for (int k = 0; k < 100; k++) {
             i = ran.nextInt(3); // Random row
@@ -207,21 +207,23 @@ public class Fifteen extends android.support.v4.app.Fragment implements View.OnC
 
     private void newGame() {
         LogicTile lt;
-        shuffle();
+        //shuffle();
 
+        updateAll();
         if (!isSolvable()) {
-            if (col == 0 && row <= 1) {
-                lt = logicTile[gameSize-2][gameSize-1];
-                logicTile[gameSize-2][gameSize-1] = logicTile[gameSize-1][gameSize-1];
+            if (row == 0 && col <= 1) {
+                lt = logicTile[gameSize-1][gameSize-2];
+                logicTile[gameSize-1][gameSize-2] = logicTile[gameSize-1][gameSize-1];
                 logicTile[gameSize-1][gameSize-1] = lt;
             } else {
                 lt = logicTile[0][0]; // get random cell
-                logicTile[0][0] = logicTile[1][0];
-                logicTile[1][0] = lt;
+                logicTile[0][0] = logicTile[0][1];
+                logicTile[0][1] = lt;
             }
         }
 
         numMoves = 0;
+        updateAll();
 //        TextView v = (TextView) getView().findViewById(R.id.textView);
 //        String s = getResources().getString(R.string.numMoves);
 //        v.setText(s + " " + numMoves);
@@ -237,12 +239,12 @@ public class Fifteen extends android.support.v4.app.Fragment implements View.OnC
 
     private int countInversions(int i, int j) {
         int inversions = 0;
-        int tileNum = j * gameSize + i;
+        int tileNum = i * gameSize + j;
         int lastTile = gameSize * gameSize;
         int tileValue = logicTile[i][j].n;
         for (int q = tileNum + 1; q < lastTile; q++) {
-            int k = q % gameSize;
-            int l = q / gameSize;
+            int l = q % gameSize;
+            int k = q / gameSize;
             int compValue = logicTile[k][l].n;
             if (tileValue > compValue && tileValue != (lastTile - 1)) {
                 inversions++;
@@ -265,7 +267,7 @@ public class Fifteen extends android.support.v4.app.Fragment implements View.OnC
         if (gameSize % 2 == 1) {
             return (sumInversions() % 2 == 0);
         } else {
-            return ((sumInversions() + gameSize - row + 1) % 2 == 0);
+            return ((sumInversions() + gameSize - (row + 1)) % 2 == 0);
         }
     }
 
@@ -273,11 +275,9 @@ public class Fifteen extends android.support.v4.app.Fragment implements View.OnC
         int r;
         int c;
 
-        public Tile(int i, int j, Context context) {
+        public Tile(int i, int j, Context context, LogicTile lt) {
             super(context);
-            int n = 1 + j + i * 4;
-            super.setId(n);
-            setText((17 - n) + "");
+            setText(lt.n + "");
             r = i;
             c = j;
         }
@@ -299,13 +299,15 @@ public class Fifteen extends android.support.v4.app.Fragment implements View.OnC
         int n, r, c;
 
         public LogicTile(int i, int j) {
-
-            n = 16 - (j * 4 + i);
+            n = (i * 4 + j) + 1;
             r = i;
             c = j;
         }
     }
 }
+
+//TODO: fixa nummerering på tilesen så att det stämmer överens överallt.
+//      Fixa så att den inte ränknar med den tomma tilen som 16 när den räknar inversions.
 
 
 
