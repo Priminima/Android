@@ -13,15 +13,17 @@ import android.widget.TextView;
 
 import java.util.Random;
 
-/**
- * Created by elin on 2015-04-17.
- */
 public class TileFlip extends android.support.v4.app.Fragment implements View.OnClickListener {
-
     private static final String ARG_SECTION_NUMBER = "section_number";
-    Tile[][] tile = new Tile[5][5];
+    int gameSize = 5;
+    Tile[][] tile = new Tile[gameSize][gameSize];
     int x = 20; //how many steps it shuffles
     int numMoves = 0;
+    int color1 = 0xFF12253B;
+    int color2 = 0xFF8CF4FF;
+
+    public TileFlip() {
+    }
 
     public static TileFlip newInstance(int sectionNumber) {
         TileFlip fragment = new TileFlip();
@@ -31,9 +33,6 @@ public class TileFlip extends android.support.v4.app.Fragment implements View.On
         return fragment;
     }
 
-    public TileFlip() {
-    }
-
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -41,13 +40,12 @@ public class TileFlip extends android.support.v4.app.Fragment implements View.On
         View v = getView();
         GridLayout gMapL = (GridLayout) rootView.findViewById(R.id.gridTF);
 
-        Tile k = null;
-        for (int i = 0; i < 5; i++) {
-            for (int j = 0; j < 5; j++) {
+        Tile k;
+        for (int i = 0; i < gameSize; i++) {
+            for (int j = 0; j < gameSize; j++) {
                 k = new Tile(i, j, getActivity());
                 k.setText("");
-                k.getBackground().setColorFilter(0xFF12253B, PorterDuff.Mode.MULTIPLY);
-                //k.setBackgroundColor(0xFFFF0000); // 0xAARRGGBB
+                k.getBackground().setColorFilter(color1, PorterDuff.Mode.MULTIPLY);
                 k.setOnClickListener(this);
                 k.setLayoutParams(new ViewGroup.LayoutParams(140, 140));
                 gMapL.addView(k);
@@ -65,7 +63,7 @@ public class TileFlip extends android.support.v4.app.Fragment implements View.On
     public void shuffle() {
         Random ran = new Random();
         for (int i = 0; i < x; i++) {
-            click(ran.nextInt(5), ran.nextInt(5));
+            click(ran.nextInt(gameSize), ran.nextInt(gameSize));
         }
     }
 
@@ -78,12 +76,14 @@ public class TileFlip extends android.support.v4.app.Fragment implements View.On
     }
 
     public void click(int r, int c) {
-        for (int i = 0; i < 5; i++) {
-            for (int j = 0; j < 5; j++) {
-                if (((Math.abs(r - i) <= 1) && j == c)
-                        || (Math.abs(c - j) <= 1) && i == r) {
-                    FlipOneTile(tile[i][j]);
-                }
+        int dirsX[] = new int[] {0, 0, 1, 0, -1};
+        int dirsY[] = new int[] {0, -1, 0, 1, 0};
+        int a, b;
+        for (int i = 0; i < dirsX.length; i++) {
+            a = r + dirsX[i];
+            b = c + dirsY[i];
+            if (a >= 0 && a < gameSize && b >= 0 && b < gameSize) {
+                FlipOneTile(tile[a][b]);
             }
         }
     }
@@ -91,10 +91,10 @@ public class TileFlip extends android.support.v4.app.Fragment implements View.On
     private void FlipOneTile(Tile k) {
         if (k.up) {
             k.up = false;
-            k.getBackground().setColorFilter(0xFF8CF4FF, PorterDuff.Mode.MULTIPLY);
+            k.getBackground().setColorFilter(color2, PorterDuff.Mode.MULTIPLY);
         } else {
             k.up = true;
-            k.getBackground().setColorFilter(0xFF12253B, PorterDuff.Mode.MULTIPLY);
+            k.getBackground().setColorFilter(color1, PorterDuff.Mode.MULTIPLY);
         }
     }
 
@@ -125,10 +125,9 @@ public class TileFlip extends android.support.v4.app.Fragment implements View.On
 
         public Tile(int r, int c, Context con) {
             super(con);
-            super.setId(1 + c + r * 5);
+            super.setId(1 + c + r * gameSize);
             this.r = r;
             this.c = c;
         }
     }
 }
-
