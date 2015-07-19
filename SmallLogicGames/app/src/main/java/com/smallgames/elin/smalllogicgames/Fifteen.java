@@ -1,13 +1,9 @@
 package com.smallgames.elin.smalllogicgames;
 
 import android.app.Activity;
-import android.app.Fragment;
 import android.content.Context;
 import android.os.Bundle;
-import android.support.v7.app.ActionBarActivity;
 import android.view.LayoutInflater;
-import android.view.Menu;
-import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
@@ -17,21 +13,19 @@ import android.widget.Toast;
 
 import java.util.Random;
 
-/**
- * Created by elin on 2015-04-16.
- */
-public class Fifteen extends android.support.v4.app.Fragment implements View.OnClickListener{
+public class Fifteen extends android.support.v4.app.Fragment implements View.OnClickListener {
     /**
      * The fragment argument representing the section number for this
      * fragment.
      */
     private static final String ARG_SECTION_NUMBER = "section_number";
-    Tile gameMap[][] = new Tile[4][4];
-    LogicTile logicTile[][] = new LogicTile[4][4];
-    int gameSize = 4;
-    int row; //rowen som den tomma rutan är på
-    int col; //columnen som den tomma rutan är på
+    int gameSize = 4; // The with and height of the game board
+    Tile gameMap[][] = new Tile[gameSize][gameSize];
+    LogicTile logicTile[][] = new LogicTile[gameSize][gameSize];
+    int row; // The row that is currently empty
+    int col; // The column that is currently empty
     int numMoves;
+
     public Fifteen() {
 
     }
@@ -56,8 +50,8 @@ public class Fifteen extends android.support.v4.app.Fragment implements View.OnC
         GridLayout gMapL = (GridLayout) rootView.findViewById(R.id.gridLM);
         init();
 
-        for (int i = 0; i < 4; i++) {
-            for (int j = 0; j < 4; j++) {
+        for (int i = 0; i < gameSize; i++) {
+            for (int j = 0; j < gameSize; j++) {
                 gMapL.addView(gameMap[i][j]);
                 //gameMap[i][j].update(logicTile[i][j]);
             }
@@ -70,9 +64,9 @@ public class Fifteen extends android.support.v4.app.Fragment implements View.OnC
         return rootView;
     }
 
-    public void init (){
-        for (int i = 0; i < 4; i++) {
-            for (int j = 0; j < 4; j++) {
+    public void init() {
+        for (int i = 0; i < gameSize; i++) {
+            for (int j = 0; j < gameSize; j++) {
                 logicTile[i][j] = new LogicTile(i, j);
                 gameMap[i][j] = new Tile(i, j, getActivity(), logicTile[i][j]);
                 gameMap[i][j].setLayoutParams(new ViewGroup.LayoutParams(170, 170));
@@ -81,8 +75,6 @@ public class Fifteen extends android.support.v4.app.Fragment implements View.OnC
             }
         }
 
-
-        //gameMap[0][0].setEnabled(false);
         row = 0;
         col = 0;
 
@@ -116,25 +108,20 @@ public class Fifteen extends android.support.v4.app.Fragment implements View.OnC
                     }
                 }
             } else {
-                Toast.makeText(getView().getContext(), "Illegal move", Toast.LENGTH_SHORT).show();
+                Toast.makeText(getView().getContext(), getString(R.string.illegal_move), Toast.LENGTH_SHORT).show();
             }
         } else {
             newGame();
         }
         Button b = (Button) getView().findViewById(R.id.NewGame);
-        b.setText(isSolvable() + " " + sumInversions());
-        isSolved();
+        b.setText(R.string.newGame);
+        if (isSolved()) {
+            Toast.makeText(getView().getContext(), getString(R.string.won_fifteen), Toast.LENGTH_SHORT).show();
+        }
     }
 
     public void oneMove(int i, int j) {
-        /*
-        gameMap[row][col].setText(gameMap[i][j].getText());
-        gameMap[row][col].setEnabled(true);
-        gameMap[i][j].setText("");
-        gameMap[i][j].setEnabled(false);
-
-        */
-        LogicTile t = logicTile[i][j]; // t is ij
+        LogicTile t = logicTile[i][j];
         logicTile[i][j] = logicTile[row][col];
         logicTile[row][col] = t;
 
@@ -145,7 +132,6 @@ public class Fifteen extends android.support.v4.app.Fragment implements View.OnC
         TextView v = (TextView) getView().findViewById(R.id.textView);
         String s = getResources().getString(R.string.numMoves);
         v.setText(s + " " + numMoves);
-
 
 
     }
@@ -160,7 +146,6 @@ public class Fifteen extends android.support.v4.app.Fragment implements View.OnC
     private boolean isSolved() {
         if (row == 3 && col == 3) {
             if (sumInversions() == 0) {
-                Toast.makeText(getView().getContext(), "YOU WON!!", Toast.LENGTH_SHORT).show();
                 return true;
             }
         }
@@ -168,58 +153,46 @@ public class Fifteen extends android.support.v4.app.Fragment implements View.OnC
     }
 
     private void shuffle() {
+        int i = gameSize * gameSize - 1;
+        int r, a, b, c, d;
         LogicTile lt;
-        Random ran = new Random();
-        int i, j;
-        boolean s;
-
-        for (int k = 0; k < 100; k++) {
-            i = ran.nextInt(3); // Random row
-            j = ran.nextInt(4); // Random col
-            s = ran.nextBoolean();
-
-
-            if (s) {
-                lt = logicTile[i][j]; // get random cell
-                logicTile[i][j] = logicTile[i+1][j];
-                logicTile[i+1][j] = lt;
-            } else {
-                lt = logicTile[j][i]; // get random cell
-                logicTile[j][i] = logicTile[j][i+1];
-                logicTile[j][i+1] = lt;
-            }
+        Random random = new Random();
+        while (i > 0) {
+            r = random.nextInt(i);
+            a = i % gameSize;
+            b = i / gameSize;
+            c = r % gameSize;
+            d = r / gameSize;
+            lt = logicTile[a][b];
+            logicTile[a][b] = logicTile[c][d];
+            logicTile[c][d] = lt;
+            i--;
         }
-        updateAll();
-
     }
 
     private void newGame() {
         LogicTile lt;
         shuffle();
-
         updateAll();
+
         if (!isSolvable()) {
             if (row == 0 && col <= 1) {
-                lt = logicTile[gameSize-1][gameSize-2];
-                logicTile[gameSize-1][gameSize-2] = logicTile[gameSize-1][gameSize-1];
-                logicTile[gameSize-1][gameSize-1] = lt;
+                lt = logicTile[gameSize - 1][gameSize - 2];
+                logicTile[gameSize - 1][gameSize - 2] = logicTile[gameSize - 1][gameSize - 1];
+                logicTile[gameSize - 1][gameSize - 1] = lt;
             } else {
-                lt = logicTile[0][0]; // get random cell
+                lt = logicTile[0][0];
                 logicTile[0][0] = logicTile[0][1];
                 logicTile[0][1] = lt;
             }
         }
 
         numMoves = 0;
-        updateAll();
-//        TextView v = (TextView) getView().findViewById(R.id.textView);
-//        String s = getResources().getString(R.string.numMoves);
-//        v.setText(s + " " + numMoves);
     }
 
     private void updateAll() {
-        for (int i = 0; i < 4; i++) {
-            for (int j = 0; j < 4; j++) {
+        for (int i = 0; i < gameSize; i++) {
+            for (int j = 0; j < gameSize; j++) {
                 gameMap[i][j].update(logicTile[i][j]);
             }
         }
@@ -291,7 +264,7 @@ public class Fifteen extends android.support.v4.app.Fragment implements View.OnC
         int n, r, c;
 
         public LogicTile(int i, int j) {
-            n = (i * 4 + j) + 1;
+            n = (i * gameSize + j) + 1;
             r = i;
             c = j;
         }

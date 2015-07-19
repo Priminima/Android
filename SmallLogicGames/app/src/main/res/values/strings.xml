@@ -13,4 +13,6 @@
     <string name="numMoves">Number of moves:</string>
 
     <string name="action_settings">Settings</string>
+    <string name="illegal_move">Illegal move</string>
+    <string name="won_fifteen">YOU WON!!</string>
 </resources>
