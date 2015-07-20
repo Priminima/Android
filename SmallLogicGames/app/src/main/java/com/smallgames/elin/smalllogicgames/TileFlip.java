@@ -76,8 +76,8 @@ public class TileFlip extends android.support.v4.app.Fragment implements View.On
     }
 
     public void click(int r, int c) {
-        int dirsX[] = new int[] {0, 0, 1, 0, -1};
-        int dirsY[] = new int[] {0, -1, 0, 1, 0};
+        int dirsX[] = new int[]{0, 0, 1, 0, -1};
+        int dirsY[] = new int[]{0, -1, 0, 1, 0};
         int a, b;
         for (int i = 0; i < dirsX.length; i++) {
             a = r + dirsX[i];
@@ -99,7 +99,6 @@ public class TileFlip extends android.support.v4.app.Fragment implements View.On
     }
 
     public void onClick(View v) {
-
         if (getView().findViewById(v.getId()).getClass().equals(Tile.class)) {
             Tile k = (Tile) getView().findViewById(v.getId());
             numMoves++;
