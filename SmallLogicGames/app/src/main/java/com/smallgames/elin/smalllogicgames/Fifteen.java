@@ -47,7 +47,10 @@ public class Fifteen extends android.support.v4.app.Fragment implements View.OnC
                              Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.fragment_main, container, false);
         //View v = getView();
-        GridLayout gMapL = (GridLayout) rootView.findViewById(R.id.gridLM);
+
+        GridLayout gMapL = (GridLayout) rootView.findViewById(R.id.gridL);
+        gMapL.setColumnCount(gameSize);
+        gMapL.setRowCount(gameSize);
         init();
 
         for (int i = 0; i < gameSize; i++) {
@@ -59,7 +62,6 @@ public class Fifteen extends android.support.v4.app.Fragment implements View.OnC
 
         rootView.findViewById(R.id.NewGame).setOnClickListener(this);
         gMapL.setVisibility(View.VISIBLE);
-        rootView.findViewById(R.id.gridTF).setVisibility(View.INVISIBLE);
 
         return rootView;
     }
@@ -144,7 +146,7 @@ public class Fifteen extends android.support.v4.app.Fragment implements View.OnC
     }
 
     private boolean isSolved() {
-        if (row == 3 && col == 3) {
+        if (row == gameSize - 1 && col == gameSize - 1) {
             if (sumInversions() == 0) {
                 return true;
             }
@@ -248,7 +250,7 @@ public class Fifteen extends android.support.v4.app.Fragment implements View.OnC
         }
 
         void update(LogicTile l) {
-            if (l.n == 16) {
+            if (l.n == gameSize * gameSize) {
                 setText("");
                 row = r;
                 col = c;
@@ -258,6 +260,17 @@ public class Fifteen extends android.support.v4.app.Fragment implements View.OnC
                 setEnabled(true);
             }
         }
+/*
+        @Override
+        public void setEnabled(boolean enabled) {
+            super.setEnabled(enabled);
+            if (enabled) {
+                setBackgroundTintMode(PorterDuff.Mode.LIGHTEN);
+            } else {
+                setBackgroundTintMode(PorterDuff.Mode.DARKEN);
+            }
+        }
+        */
     }
 
     class LogicTile {

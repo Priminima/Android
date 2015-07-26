@@ -10,16 +10,6 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content" />
 
-    <GridLayout
-        android:layout_width="fill_parent"
-        android:layout_height="fill_parent"
-        android:layout_centerVertical="true"
-        android:layout_centerHorizontal="true"
-        android:rowCount="4"
-        android:columnCount="4"
-        android:id="@+id/gridLM">
-    </GridLayout>
-
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -38,15 +28,13 @@
         android:layout_alignParentEnd="true"/>
 
     <GridLayout
-        android:layout_width="fill_parent"
-        android:layout_height="fill_parent"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
         android:layout_centerVertical="true"
         android:layout_centerHorizontal="true"
         android:rowCount="5"
         android:columnCount="5"
-        android:id="@+id/gridTF">
+        android:stretchMode="columnWidth"
+        android:id="@+id/gridL">
     </GridLayout>
-
-
-
 </RelativeLayout>

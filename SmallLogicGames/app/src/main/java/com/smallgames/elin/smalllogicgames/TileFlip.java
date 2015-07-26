@@ -10,17 +10,18 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.GridLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import java.util.Random;
 
 public class TileFlip extends android.support.v4.app.Fragment implements View.OnClickListener {
     private static final String ARG_SECTION_NUMBER = "section_number";
     int gameSize = 5;
-    Tile[][] tile = new Tile[gameSize][gameSize];
-    int x = 20; //how many steps it shuffles
+    Tile[][] tile;
+    int x = gameSize * 4; //how many steps it shuffles
     int numMoves = 0;
-    int color1 = 0xFF12253B;
-    int color2 = 0xFF8CF4FF;
+    int colorUp = 0xFF8CF4FF;
+    int colorDown = 0xFF12253B;
 
     public TileFlip() {
     }
@@ -38,16 +39,21 @@ public class TileFlip extends android.support.v4.app.Fragment implements View.On
                              Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.fragment_main, container, false);
         View v = getView();
-        GridLayout gMapL = (GridLayout) rootView.findViewById(R.id.gridTF);
+        GridLayout gMapL = (GridLayout) rootView.findViewById(R.id.gridL);
+
+        gMapL.setColumnCount(gameSize);
+        gMapL.setRowCount(gameSize);
+        tile = new Tile[gameSize][gameSize];
 
         Tile k;
         for (int i = 0; i < gameSize; i++) {
             for (int j = 0; j < gameSize; j++) {
                 k = new Tile(i, j, getActivity());
                 k.setText("");
-                k.getBackground().setColorFilter(color1, PorterDuff.Mode.MULTIPLY);
+                k.getBackground().setColorFilter(colorUp, PorterDuff.Mode.MULTIPLY);
                 k.setOnClickListener(this);
                 k.setLayoutParams(new ViewGroup.LayoutParams(140, 140));
+                //k.setLayoutParams(new ViewGroup.LayoutParams(140, 140));
                 gMapL.addView(k);
                 tile[i][j] = k;
             }
@@ -56,7 +62,6 @@ public class TileFlip extends android.support.v4.app.Fragment implements View.On
 
         rootView.findViewById(R.id.NewGame).setOnClickListener(this);
         gMapL.setVisibility(View.VISIBLE);
-        rootView.findViewById(R.id.gridLM).setVisibility(View.INVISIBLE);
         return rootView;
     }
 
@@ -91,11 +96,22 @@ public class TileFlip extends android.support.v4.app.Fragment implements View.On
     private void FlipOneTile(Tile k) {
         if (k.up) {
             k.up = false;
-            k.getBackground().setColorFilter(color2, PorterDuff.Mode.MULTIPLY);
+            k.getBackground().setColorFilter(colorDown, PorterDuff.Mode.MULTIPLY);
         } else {
             k.up = true;
-            k.getBackground().setColorFilter(color1, PorterDuff.Mode.MULTIPLY);
+            k.getBackground().setColorFilter(colorUp, PorterDuff.Mode.MULTIPLY);
         }
+    }
+
+    private boolean isSolved() {
+        for (int i = 0; i < gameSize; i++) {
+            for (int j = 0; j < gameSize; j++) {
+                if (!tile[i][j].up) {
+                    return false;
+                }
+            }
+        }
+        return true;
     }
 
     public void onClick(View v) {
@@ -107,6 +123,10 @@ public class TileFlip extends android.support.v4.app.Fragment implements View.On
             click(k.r, k.c);
         } else {
             newGame();
+        }
+        if (isSolved()) {
+            Toast.makeText(getView().getContext(),
+                    getString(R.string.won_fifteen), Toast.LENGTH_SHORT).show();
         }
     }
 
