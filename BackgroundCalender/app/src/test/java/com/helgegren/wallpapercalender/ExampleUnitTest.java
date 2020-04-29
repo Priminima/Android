@@ -1,4 +1,4 @@
-package com.helgegren.backroundcalender;
+package com.helgegren.wallpapercalender;
 
 import org.junit.Test;
 
