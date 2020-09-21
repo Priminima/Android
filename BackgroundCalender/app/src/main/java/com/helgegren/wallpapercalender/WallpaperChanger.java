@@ -26,8 +26,8 @@ public class WallpaperChanger {
     }
 
     void setBackground(int month) {
-        WallpaperManager wallpaperManager =
-                WallpaperManager.getInstance(mContext);
+        Log.v("ELIN", "setBackround");
+        WallpaperManager wallpaperManager = WallpaperManager.getInstance(mContext);
         String path = getPicturePath(month);
         Bitmap monthPicture = getBitmap(path);
         if (null != monthPicture) {
