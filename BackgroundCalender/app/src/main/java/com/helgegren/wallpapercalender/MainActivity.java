@@ -27,7 +27,6 @@ public class MainActivity extends AppCompatActivity {
         mWallpaperChanger = new WallpaperChanger(getApplicationContext());
 
         setUpButtons();
-        ChangeTrigger.triggerJob(getApplicationContext());
     }
 
     private void setUpButtons() {
@@ -55,7 +54,7 @@ public class MainActivity extends AppCompatActivity {
 
     private void onSetWallpaper(View view) {
         int selectedMonth = mSpinner.getSelectedItemPosition();
-        mWallpaperChanger.setBackground(selectedMonth);
+        mWallpaperChanger.setBackground(selectedMonth + 1);
     }
 
 }

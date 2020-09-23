@@ -14,24 +14,33 @@ public class ChangeTrigger extends JobService {
 
     private static final String LOG_TAG = "ELIN";
 
-    static void triggerJob(Context context) {
+    static void triggerJobNextMonth(Context context) {
+        Calendar cal = Calendar.getInstance();
+        long currentMs = cal.getTimeInMillis();
+        cal.set(cal.get(Calendar.YEAR), cal.get(Calendar.MONTH) + 1, 1, 0,0,0);
+        long timeToTrigger = cal.getTimeInMillis() - currentMs;
 
+        if (BuildConfig.DEBUG) {
+            timeToTrigger = 60 * 1000;
+        }
+        Log.v(LOG_TAG, cal.getTime() + " date");
+        Log.v(LOG_TAG, timeToTrigger + " ms");
+        scheduleJob(context, timeToTrigger);
+    }
+
+    static void triggerJobNow(Context context) {
+        scheduleJob(context, 0);
+    }
+
+    private static void scheduleJob(Context context, long latency) {
         JobScheduler jobScheduler = (JobScheduler) context.getSystemService(Context.JOB_SCHEDULER_SERVICE);
         if (null == jobScheduler) {
             Log.w(LOG_TAG, "Could not trigger job, no jobscheduler availible from context");
             return;
         }
-        Calendar cal = Calendar.getInstance();
-        long currentMs = cal.getTimeInMillis();
-        //cal.set(cal.get(Calendar.YEAR), currentMonth + 1 % 12, 1);
-        //cal.set(Calendar.DAY_OF_MONTH, 1);
-        cal.set(Calendar.SECOND, cal.get(Calendar.SECOND) + 10);
-        long timeToTrigger = cal.getTimeInMillis() - currentMs;
-        Log.v(LOG_TAG, cal.getTime() + " date");
-        Log.v(LOG_TAG, timeToTrigger + " ms");
 
         JobInfo jobInfo = new JobInfo.Builder(5, new ComponentName(context, ChangeTrigger.class))
-                .setMinimumLatency(timeToTrigger)
+                .setMinimumLatency(latency)
                 .build();
 
         jobScheduler.schedule(jobInfo);
@@ -40,8 +49,13 @@ public class ChangeTrigger extends JobService {
     @Override
     public boolean onStartJob(JobParameters params) {
         int month = Calendar.getInstance().get(Calendar.MONTH);
-        Log.v("ELIN", "triggered!" + month);
+        if (BuildConfig.DEBUG) {
+            month = Calendar.getInstance().get(Calendar.MINUTE) % 12 + 1;
+        }
+
+        Log.v(LOG_TAG, "triggered!" + month);
         new WallpaperChanger(getApplicationContext()).setBackground(month);
+        triggerJobNextMonth(getApplicationContext());
         return false;
     }
 
